@@ -6,9 +6,10 @@ import java.util.List;
 
 class AppTest {
     @Test
-    void testCalculateFinalPriceForVIP() {
-        App app = new App();
-        double result = app.calculateFinalPrice(List.of(100.0), List.of(1), "VIP", "NONE");
-        assertEquals(92.0, result);
+    void testVipCustomerWithPromo() {
+        App engine = new App();
+        List<OrderItem> items = List.of(new OrderItem("Product", 100.0, 1));
+        double result = engine.calculateTotal(items, "VIP", "SAVE10");
+        assertEquals(80.5, result, 0.001);
     }
 }
