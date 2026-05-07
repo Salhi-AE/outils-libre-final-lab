@@ -3,26 +3,19 @@ package com.lab.pricing;
 import java.util.List;
 
 public class App {
+    private static final double TAX_RATE = 0.15;
 
-    public double calculateTotal(List<OrderItem> items, String customerType, String promoCode) {
-        double subtotal = items.stream()
-                .mapToDouble(OrderItem::getSubtotal)
-                .sum();
-        double discount = getCustomerDiscount(subtotal, customerType) + getPromoDiscount(promoCode);
-        double tax = (subtotal - discount) * 0.15;
-        return subtotal - discount + tax;
+    public double calculateTotal(List<OrderItem> items, String type, String promo) {
+        double subtotal = items.stream().mapToDouble(OrderItem::getSubtotal).sum();
+
+        double customerDiscount = subtotal * DiscountManager.getCustomerDiscountRate(type);
+        double promoDiscount = DiscountManager.getPromoAmount(promo);
+
+        double totalDiscount = customerDiscount + promoDiscount;
+        double taxableAmount = Math.max(0, subtotal - totalDiscount);
+
+        return taxableAmount + (taxableAmount * TAX_RATE);
     }
-
-    private double getCustomerDiscount(double subtotal, String type) {
-        if ("VIP".equalsIgnoreCase(type)) return subtotal * 0.20;
-        return 0;
-    }
-
-    private double getPromoDiscount(String code) {
-        if ("SAVE10".equalsIgnoreCase(code)) return 10.0;
-        return 0;
-    }
-
     public static void main(String[] args) {
         if (args.length < 4) {
             System.out.println("Usage: <Price> <Qty> <CustomerType> <Promo>");
