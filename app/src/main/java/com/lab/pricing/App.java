@@ -24,13 +24,18 @@ public class App {
     }
 
     public static void main(String[] args) {
-        App engine = new App();
-        List<OrderItem> cart = List.of(
-                new OrderItem("Laptop", 1000.0, 1),
-                new OrderItem("Mouse", 50.0, 2)
-        );
+        if (args.length < 4) {
+            System.out.println("Usage: <Price> <Qty> <CustomerType> <Promo>");
+            return;
+        }
 
-        double finalPrice = engine.calculateTotal(cart, "VIP", "SAVE10");
-        System.out.println("Final Price for VIP with SAVE10: " + finalPrice);
+        App engine = new App();
+        double price = Double.parseDouble(args[0]);
+        int qty = Integer.parseInt(args[1]);
+        String type = args[2];
+        String promo = args[3];
+
+        List<OrderItem> cart = List.of(new OrderItem("Product", price, qty));
+        System.out.println(engine.calculateTotal(cart, type, promo));
     }
 }
